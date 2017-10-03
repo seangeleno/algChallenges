@@ -8,7 +8,7 @@ typedef struct {
 	int16_t y;
 } point;
 
-typedef struct player {
+typedef struct {
 	uint8_t	hero;
 	uint8_t	villain;
 	point		position;
@@ -27,3 +27,5 @@ player *simulate (const player *p, size_t pn, \
 // that the players' goals are simultaneously achieved
 // as best possible
 player *solve (const player *p, size_t pn, const point *bounds, size_t bn);
+
+
