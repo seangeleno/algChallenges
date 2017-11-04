@@ -1,8 +1,0 @@
-//simulate
-#include "challenge.h"
-
-int simulate( const player* p, size_t pn,
-	const point *bounds, size_t bn,
-	uint8_t step, size_t time){
-	
-	}
