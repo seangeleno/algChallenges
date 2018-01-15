@@ -34,7 +34,7 @@ string StringNode::retrieve(const string str) const {
 	return this->data;
 }
 int8_t StringNode::comp(const string str) const{
-	if ( this->data > str)
+	if ( str > this->data)
 		return 1;
 	else if ( this->data == str)
 		return 0;

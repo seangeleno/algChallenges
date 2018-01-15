@@ -20,6 +20,7 @@ private:
 	void display_one( string, Node* ) const;
 	void display_all(Node*) const;
 	int8_t EOU_del(Node*&);
+	unordered_map<string, vector<uint32_t> > retrieve_map(const string, Node*) const;
 
 public:
 	Tree(void);

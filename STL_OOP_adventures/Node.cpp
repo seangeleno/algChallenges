@@ -1,8 +1,8 @@
 #include "Node.hpp"
 
 Node::Node(){
-	this->next[0] = NULL;
-	this->next[1] = NULL;
+	this->next[0] = (Node*)0;
+	this->next[1] = (Node*)0;
 	this->paths=NULL;
 }
 

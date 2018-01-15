@@ -36,7 +36,7 @@ uint32_t value)
 
 
 int8_t HashNode::comp(const string str) const{	
-	if (this->family > str)
+	if (str > this->family)
 		return 1;
 	else if (this->family == str)
 		return 0;

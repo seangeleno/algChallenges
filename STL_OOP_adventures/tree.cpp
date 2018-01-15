@@ -66,7 +66,7 @@ int8_t Tree::insert( string fam_checker, string key_in,
 			return dynamic_cast<HashNode*>(current)->insert(key_in, datum);
 		}
 		parent = current;
-		if (comparison_output < -1){
+		if (comparison_output < 0){
 			current = current->next[0];
 			l_g = 0;
 		}
@@ -140,21 +140,29 @@ Tree::retrieve(const string family_id, const string genus_id )const {
 			current = current->next[1];
 	}
 }
+
 unordered_map<string, vector<uint32_t> >
 Tree::retrieve_map(const string fam) const{
-	Node * current = this->head;
-	while(current){
-		int8_t comparison_output = current->comp(fam);
-		if (comparison_output == 0)
-			return dynamic_cast<HashNode*>(current)->retrieve_map();
-		else if (comparison_output < 0)
-			current = current->next[0];
-		else if (comparison_output < 0)	
-			current = current->next[1];
-	}
-
+	return retrieve_map(fam, this->head);
 }
 
+
+unordered_map<string, vector<uint32_t> >
+Tree::retrieve_map(const string fam, Node * current) const{
+	if (!current)
+		return (unordered_map<string,vector<uint32_t> >)0;
+	int8_t comparison_output = current->comp(fam);
+	
+	if(comparison_output == 0)
+		return dynamic_cast<HashNode*>(current)->retrieve_map();	
+	else if (comparison_output<0)
+		return retrieve_map(fam, current->next[0]);
+	else 
+		return retrieve_map(fam, current->next[1]);
+
+
+
+}
 void Tree::display_one( const string str, Node * current ) const {
 	//traverse to node to display recursively
 	if (!current)
