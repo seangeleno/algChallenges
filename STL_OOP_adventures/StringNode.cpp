@@ -1,3 +1,9 @@
+//This Node extension handles c++ strings. These allow under-the-hood handling of dynamic string operations
+//This means you do not have to worry about reallocation; the stl::string handles it for you.  concatenation and 
+//copying are seemingly robust enough that they become a programmatic afterthought to the user.  This streamlines
+//string heavy dev.  It is obviously a cstring underneath the hood, and as such allows conversions between forms. 
+//Look to main.cpp for reading in std::strings properly 
+
 #include "Node.hpp"
 
 using namespace std;
@@ -14,7 +20,6 @@ StringNode::StringNode(const string str){
 
 
 StringNode::StringNode(const string str, const Node *& parent){
-	//this->prev = parent;
 	this->data = str;
 	this->paths = NULL;
 
@@ -27,9 +32,13 @@ int8_t StringNode::insert(const string str){
 		this->data = str;
 	return 1;
 }
+
+
 void StringNode::disp_short(void) const{
 	cout << "\t" << this->data << endl;
 }
+
+
 string StringNode::retrieve(const string str) const {
 	return this->data;
 }
@@ -54,6 +63,11 @@ void StringNode::display (void)  const{
 
 
 StringNode::~StringNode(){
+//All nodes have an std::vector that allows for dynamic upsizing depending
+//on use of the structure. Here, paths is a vector of Node pointers. This allows 
+//generalized interaction with other classes dervied from Node abstract class. 
+	
+//Connects with them across the tree for usage intense demands to cut traversal time.
 	if (this->paths)
 		delete paths;
 
