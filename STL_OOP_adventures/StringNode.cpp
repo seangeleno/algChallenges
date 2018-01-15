@@ -54,8 +54,11 @@ void StringNode::display (void)  const{
 	cout << "PHYLUM " << this->data << endl;
 	if (this->paths){
 		cout << "PHYLUM " << this->data << " contains connections directly to" <<endl;
+		//auto is a keyword that allows the compiler to decide what best fits the variables data type.
+		//useful for streamlining, but really annoying when used constantly.  Only use when the data type and usage
+		//are obvious. in this case, it is a primitive (integer) to iterate through the vector
 		for (auto i = 0; i < this->paths->size(); ++i){
-			this->paths->at(i)->disp_short();
+			this->paths->at(i)->disp_short(); //at is a function that corresponds to indexing
 		}
 	}
 	return;
