@@ -6,18 +6,6 @@ using namespace std;
 
 int main(){
 	Tree main_tree = Tree("hello there");
-	
-
-
-
-
-
-
-
-
-
-
-
 	int  __case = 1;	
 	while(__case){
 	cout << "1 insert family with genus and phylum\n2 insert new phylum\n" << 
@@ -69,7 +57,6 @@ int main(){
 				cout << "\t"<<species_list[i]<<endl;
 			break;
 		
-
 		case 5:
 			cout << "family genus species" << endl;
 			cin >> in_family >> in_genus >> in_species;
