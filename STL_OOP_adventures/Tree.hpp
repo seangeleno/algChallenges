@@ -14,7 +14,7 @@
 using namespace std;
 class Tree{
 private:
-	Node* head;
+	Node* head; // Note is Node, not HashNode or StringNode. Allows for runtime designation
 
 	int8_t insert_path( const string, const Node*&, Node*);
 	void display_one( string, Node* ) const;
