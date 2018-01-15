@@ -35,7 +35,7 @@ uint32_t value)
 
 
 
-int8_t HashNode::comp(const string str) const{	
+int8_t HashNode::comp(const string str) const{	//note lack of override keyword. only needs to be in prototype
 	if (this->family > str)
 		return 1;
 	else if (this->family == str)
@@ -50,11 +50,13 @@ int8_t HashNode::insert( string str){
 
 void HashNode::display(void)const{
 	cout << "FAMILY " << this->family << endl;
-	for( auto iter = this->data.begin(); iter!=this->data.end(); ++iter){
+	for( auto iter = this->data.begin(); iter!=this->data.end(); ++iter){ //auto is useful here.
+		// we know it will be an iterator, and just treat it as such.  Without auto, this declaration would be
+		//too wordy to be usefully readable
 		cout << "GENUS " << iter->first << " contains " << endl;
 
-		auto local_vec_size = iter->second.size();
-		vector<uint32_t> local_vec = iter->second;
+		auto local_vec_size = iter->second.size();  //get size of respective vector
+		vector<uint32_t> local_vec = iter->second; //get vector from iterator loc
 		for (size_t i = 0;  i < local_vec_size; ++i){
 			cout << '\t' << local_vec[i] << endl;
 		}	
@@ -83,11 +85,12 @@ int8_t HashNode::insert(string str, uint32_t value){
 		const_iterator st = this->data.find( str );
 
 	if (st == this->data.end()){
-		this->data[str].push_back( value );
+		this->data[str].push_back( value ); //creates new key and pushes value in
 		return 2;
 	}
 	else{
-		this->data[str].push_back( value );
+		this->data[str].push_back( value ); //st is used to determine existence of key
+		//doesnt need to be used for insertion otherwise with this implementation of unordered_map
 		return 1;
 	}
 }
@@ -105,7 +108,7 @@ HashNode::retrieve(const string str) const
 
 
 
-unordered_map<string, vector<uint32_t> > 
+unordered_map<string, vector<uint32_t> >  //note return type.
 HashNode::retrieve_map(void) const
 {
 	return this->data;
