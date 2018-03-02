@@ -6,18 +6,6 @@ using namespace std;
 
 int main(){
 	Tree main_tree = Tree("hello there");
-	
-
-
-
-
-
-
-
-
-
-
-
 	int  __case = 1;	
 	while(__case){
 	cout << "1 insert family with genus and phylum\n2 insert new phylum\n" << 
@@ -29,8 +17,8 @@ int main(){
 	string in_family, in_genus, in_phylum;
 	string rx_fam;
 
-	unordered_map<string, vector<uint32_t> > family_map;
-	vector<uint32_t> species_list;
+	unordered_map<string, vector<uint32_t> > family_map; //note that these are created and destroyed per loop
+	vector<uint32_t> species_list; //this cost can theoretically be overriden if defined outside the loop
 	uint32_t in_species =1;
 	switch(__case){
 		case 1:
@@ -69,7 +57,6 @@ int main(){
 				cout << "\t"<<species_list[i]<<endl;
 			break;
 		
-
 		case 5:
 			cout << "family genus species" << endl;
 			cin >> in_family >> in_genus >> in_species;

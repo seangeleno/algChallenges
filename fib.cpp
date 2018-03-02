@@ -8,12 +8,12 @@ unordered_map<int,long long int>::const_iterator fib( unordered_map<int,long lon
 int main(){
 	int nth_term;
 	unordered_map<int,long long int> map_in;
-	cout << "enter the nth term of the fibanocci sequence you wish to return" << endl;
-	cin >> nth_term;
-	cin.ignore(400, '\n');
+//	cout << "enter the nth term of the fibanocci sequence you wish to return" << endl;
+//	cin >> nth_term;
+//	cin.ignore(400, '\n');
 
 
-	unordered_map<int,long long int>::const_iterator output = fib( map_in, nth_term);
+	unordered_map<int,long long int>::const_iterator output = fib( map_in, 95);
 	cout << "the " << nth_term << " of the fibanocci sequence is " << output->second << " " << endl;
 	return 0;
 }

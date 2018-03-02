@@ -27,21 +27,21 @@ uint32_t datum)
 	this->head = new HashNode(fam_setter,key,datum);
 }
 int8_t Tree::insert( const string str ){
-	//if head not defined, head node is a StringNode. pass forward to enter
-	//recursive call
+	//experimenting with iterative traversal of tree.
 	if (!this->head){
 		this->head = new StringNode(str);
 		return 5;
 	}
-	Node * current = this->head;
-	Node * parent;
-	bool l_g;
+	Node * current = this->head;  //Note Abstract Node. Can be either Hash or String
+	Node * parent; //used to retrieve previous array for allocation
+	bool l_g; //figure if previous index should be left or right (0 or 1 respectively)
 	while( current ){
 		parent = current;
 		if ( current->comp(str) < 0){
 			l_g = 0;
 			current = current->next[0];
-		}	else {
+		} 
+		else {
 			l_g = 1;	
 			current = current->next[1];
 		}
@@ -64,6 +64,8 @@ int8_t Tree::insert( string fam_checker, string key_in,
 		int8_t comparison_output = current->comp(fam_checker);
 		if (comparison_output == 0){
 			return dynamic_cast<HashNode*>(current)->insert(key_in, datum);
+			//dynamic cast of current, which is type Node, to HashNode *. this allows for 
+			//HashNode specific behavior in implementation, ie insert key and datum
 		}
 		parent = current;
 		if (comparison_output < 0){
@@ -97,7 +99,7 @@ int8_t Tree::insert_path( const string rx_str, const string tx_str, Node * curre
 	int8_t comparison_output = current->comp(rx_str); 
 	if (comparison_output == 0){
 		if (tx_str < rx_str)
-			return insert_path(tx_str, current, this->head);
+			return insert_path(tx_str, current, this->head); //start at the head to find the requisite Node
 		return insert_path(tx_str, current, this->head);
 	}
 
@@ -133,7 +135,10 @@ Tree::retrieve(const string family_id, const string genus_id )const {
 	while(current){
 		int8_t comparison_output = current->comp(family_id);
 		if (comparison_output == 0)
-			return dynamic_cast<HashNode*>(current)->retrieve(genus_id);
+			return dynamic_cast<HashNode*>(current)->retrieve(genus_id); //HashNode specific retrieve
+			//this isnt a safe implementation. what if there is a phylum w the same family id?
+			//just for illustrative purpose
+			
 		else if (comparison_output < 0)
 			current = current->next[0];
 		else
