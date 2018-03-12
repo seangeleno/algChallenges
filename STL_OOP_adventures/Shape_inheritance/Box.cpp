@@ -12,17 +12,23 @@ Box::Box(double width, double length, double height, int id){
 
 }
 
+
 void Box::get_dim_attr( attr_box *& cont )const {
 	cont->length = this->length;
 	cont->width = this->width;
 	cont->height = this->height;
 	return;
 }
+
+
 void Box::display(void)const{
 	double volume = length * width * height;
-	printf("length : %lf widthe : %lf height : %lf volume : %lf id : %d \n", length, width, height, volume, id);
+	printf("length: %lf width: %lf height: %lf volume: %lf id: %d \n",
+		length, width, height, volume, id);
 	return;
 }
+
+
 double Box::get_volume(void)const{
 	double volume = length*width*height;
 	return volume;

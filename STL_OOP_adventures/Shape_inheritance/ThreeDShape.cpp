@@ -7,4 +7,5 @@ ThreeDShape::ThreeDShape(){
 int ThreeDShape::get_dimension(void) const{
 	return dimension;
 }
+
 ThreeDShape::~ThreeDShape(){}

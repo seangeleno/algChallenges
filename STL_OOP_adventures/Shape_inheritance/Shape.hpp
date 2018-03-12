@@ -7,13 +7,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-class attr{
-public:
-	int baba;
-	attr(void){}
-	~attr(void){}
-};
-
+/**********************************************************/
+/*                ABSTRACT CLASSES                        */
 class Shape{
 protected:
 	int id;
@@ -48,38 +43,14 @@ public:
 
 
 
-class attr_box : public attr{
-public:
+
+/**********************************************************/
+/*                       3D SHAPES                        */
+struct attr_box{
 	double length;
 	double width;
 	double height;
 };
-
-
-
-
-class attr_circ : public attr{
-public:
-	double radius;
-};
-
-
-class Circle: public TwoDShape{
-private:
-	double radius;
-public:
-	Circle();
-	Circle(double, int);
-	~Circle(void);
-	
-	double get_area(void)const override;
-	void get_dim_attr(attr_circ*&)const;
-	void display(void)const override;
-};
-
-
-
-
 
 class Box : public ThreeDShape{
 protected:
@@ -97,9 +68,20 @@ public:
 };
 
 
-
-class attr_sph : public attr{
+class Cube : public Box{
 public:
+	Cube(void);
+	Cube(double,int);
+	~Cube(void);
+
+	double get_volume(void) const override;
+	void get_dim_attr(attr_box*&) const;
+	void display(void)const override;
+};
+
+
+
+struct attr_sph{
 	double radius;
 };
 
@@ -109,7 +91,6 @@ private:
 public:
 	Sphere();
 	Sphere(double,int);
-
 	~Sphere();
 
 	double get_volume(void) const override;
@@ -120,23 +101,37 @@ public:
 
 
 
+/************************************************************/
+/*                    2D Shapes                             */
 
+struct attr_circ{
+	double radius;
+};
 
-
-class attr_rect : public attr{
+class Circle: public TwoDShape{
+private:
+	double radius;
 public:
+	Circle();
+	Circle(double, int);
+	~Circle(void);
+	
+	double get_area(void)const override;
+	void get_dim_attr(attr_circ*&)const;
+	void display(void)const override;
+};
+
+
+
+struct attr_rect{
 	double length;
 	double width;
 };
-
 
 class Rectangle : public TwoDShape{
 protected:
 	double length;
 	double width;
-
-
-
 public:
 	 Rectangle();
 	 Rectangle(double, double, int);
@@ -145,6 +140,7 @@ public:
 	void get_dim_attr(attr_box*&) const;
 	void display(void)const override;
 };
+
 
 class Square : public Rectangle{
 public:
@@ -156,18 +152,6 @@ public:
 	void get_dim_attr(attr_rect*&) const;
 	void display(void)const override;
 };
-class Cube : public Box{
-public:
-	Cube(void);
-	Cube(double,int);
-	~Cube(void);
 
-	double get_volume(void) const override;
-	void get_dim_attr(attr_box*&) const;
-	
-
-
-	void display(void)const override;
-};
 
 #endif
