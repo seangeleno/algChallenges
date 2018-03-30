@@ -32,20 +32,25 @@ int main()
 {	
 	auto num_threads = std::thread::hardware_concurrency();
 	thread** threads = new thread*[num_threads-1];
-	for (int i = 0; i < num_threads-1; ++i)
+	for (int i = 0; i < num_threads-1; ++i){
+		mtx.lock();
 		threads[i] = new thread(foo, i+1);
+		mtx.unlock();
+	}
+
 	for (int i = 0; i < num_threads-1; ++i){
 		threads[i]->join();
 		delete threads[i];
 	}
+
 	int LIM = 50;	
 	srand(1);
-	
-	int* todo = new int[375];
-	for (int i = 0; i < 375; ++i)
+	int* todo = new int[num_threads*125];
+	int todo_size = num_threads*125;
+	for (int i = 0; i < todo_size; ++i)
 		todo[i] = rand()%LIM;
 	
-	for (int i = 0; i < 375; ++i){
+	for (int i = 0; i < todo_size; ++i){
 		if (i % 20 == 0) printf("\n");
 		printf("%d  ", todo[i]); 
 	}	
@@ -59,7 +64,7 @@ int main()
 	}
 	delete[] threads;
 
-	for (int i = 0; i < 375; ++i){
+	for (int i = 0; i < todo_size; ++i){
 		if (i % 20 == 0) printf("\n");
 		printf("%d  ", todo[i]); 
 	}	
@@ -67,6 +72,7 @@ int main()
 
 
 	delete[] todo;
+
 
 	return EXIT_SUCCESS;
 }
