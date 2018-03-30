@@ -4,15 +4,12 @@
 //to give an example of implmentation. The destructor contains a readout in order to verify proper destruction
 
 Node::Node(){
-<<<<<<< HEAD
 	this->next[0] = (Node*)0;
 	this->next[1] = (Node*)0;
-=======
 	//Leaving left and right pointers inside of an array for ease of extension down the line
 	// in dev.
 	this->next[0] = NULL;
 	this->next[1] = NULL;
->>>>>>> refs/remotes/origin/master
 	this->paths=NULL;
 }
 

@@ -35,13 +35,10 @@ uint32_t value)
 
 
 
-<<<<<<< HEAD
 int8_t HashNode::comp(const string str) const{	
 	if (str > this->family)
-=======
 int8_t HashNode::comp(const string str) const{	//note lack of override keyword. only needs to be in prototype
 	if (this->family > str)
->>>>>>> refs/remotes/origin/master
 		return 1;
 	else if (this->family == str)
 		return 0;
