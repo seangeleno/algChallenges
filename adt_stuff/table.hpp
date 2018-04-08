@@ -1,10 +1,11 @@
 #pragma once
 
 #include "string.hpp"
+#include "query.hpp"
 #include <iostream>
 struct node{
 	node* next;
-	string dat;
+	query dat;
 };
 
 
@@ -27,7 +28,9 @@ private:
 public:
 	table();
 	~table();
-	int insert(const string&);
+	int insert(const query&);
+	int remove(const string&);
+	query retrieve(const string&)const;
 	void display(void)const;
 };
 

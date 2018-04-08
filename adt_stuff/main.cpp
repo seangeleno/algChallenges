@@ -3,32 +3,75 @@
 
 #include <iostream>
 
-int main(){
-	char buffer[300];
-	string str1, str2;
-	string str3;
-	table storage;
-	cin >> str1;
-	cout << str1 << std::endl;
-
-	cin.get(buffer,299,'\n');
-	cin.ignore(300,'\n');
-	char* _in = new char[strlen(buffer)+1];
-	strcpy(_in,buffer);
-	str2 = str1+=_in;
+void concat(string & str1, string & str2, table & storage){
+	int select;
+	query query1, query2;
+	cout << "1 to retrieve an item and then concatenate, " <<
+		"2 to concatenate two retrieved" << std::endl;
+	cin >> select;
+	cin.ignore(400,'\n');
 
 
-	storage.insert(str2);	
-	str3 = str1 + " yes hi1 ";
-	cout << str3 << std::endl;
-	storage.insert(str3);
-	for (int i = 0; i < 5; ++i)
+	if (select==1){
+		cin >> str1;
+
+
+		
+		cin.ignore(400,'\n');	
+		query1 = storage.retrieve(str1);
+		query1.display();
+		str2 = query1.get_name();
+		cout << "modify\n";
+		cin >> str1;
 		str2+=str1;
-	cout << str2 << std::endl;
-	storage.insert(str1);
-	storage.insert(str2);
+		if(query1.set_name(str2)){
+			cout << "successful modification" << std::endl;
+			storage.insert(query1);
+		}
+		return;
+	}
+	else if (select == 2){
+		cin >> str1;
+		query1 = storage.retrieve(str1);
+		query2 = storage.retrieve(str2);
+		query1.join(query2);
+		storage.remove(str1);
+		storage.remove(str2);
+		storage.insert(query1);
+	}
+	return;
+}
 
-	storage.display();
-	delete[] _in;
+int main(){
+	query query1;
+	string str1, str2;
+	table storage;
+	int select;
+	do{
+		cout << "1) input string to table\n2) display table\n3) concatenate 2 strings\n0) exit\n" << std::endl;
+		cin >> select;
+		cin.ignore(400,'\n');
+		switch(select){
+			case 1:
+				cin >> str1 >> str2;
+				query1.set_name(str1);
+				query1.set_date(str2);
+				storage.insert(query1);
+				break;
+			case 2:
+				storage.display();
+				break;
+			case 3:
+
+				concat(str1,str2,storage);
+				break;
+				
+			default:
+				cout << "enter a valid option" << std::endl;
+				break;
+
+		}
+	} while( select );
+				
 	return 0;
 }

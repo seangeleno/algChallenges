@@ -88,6 +88,20 @@ string& string::operator =(const string &other){
 }
 
 
+string& string::operator =(const char* other){
+	if (__str)
+		delete[] __str;
+	__cap = strlen(other) + 1;
+	__str = new char[__cap];
+	memcpy(__str,other,__cap);
+	return *this;
+}
+
+bool string::operator !=(const string& other) const{
+	if (strcmp(__str, other.__str)!=0)
+		return false;
+	return true;
+}
 char& string::operator[](const int i)const{
 	char c = '\0';
 	if (i > __cap)	return __str[0];

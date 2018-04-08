@@ -17,10 +17,11 @@ table::table(void){
 
 
 
-int table::insert(const string& in_){
+int table::insert(const query& in_){
+	string str = in_.get_name();
 	int sum = 0;
-	for (int i = 0; i < in_.size(); ++i)
-		sum+=in_[i];	
+	for (int i = 0; i < str.size(); ++i)
+		sum+=str[i];	
 
 	node* loc = __tbl[sum%__sz];
 	if (!loc){
@@ -45,11 +46,48 @@ void table::display(void)const{
 	for (int i = 0; i < __sz; ++i){
 		node * curr = __tbl[i];
 		while(curr){
-			std::cout << curr->dat << std::endl;
+			curr->dat.display();
 			curr = curr->next;
 		}
+
 	}
 	return;
+}
+
+
+query table::retrieve(const string& name) const{
+	int sum = 0;
+	int size = name.size();
+	for (int i = 0; i < size; ++i)
+		sum += name[i];
+	node * loc = __tbl[sum%__sz];
+	if (!loc)
+		return 0;
+	while( loc->dat.get_name() != name)
+		loc = loc->next;
+	if (!loc)
+		return NULL;
+	return loc->dat;
+}
+
+	
+int table::remove(const string& desig){
+
+	int sum = 0;
+	int size = desig.size();
+
+	for(int i = 0; i < size; ++i)
+		sum+=desig[i];
+
+	node * loc = __tbl[sum % __sz];
+	while(loc){
+		if (loc->dat.get_name()!=desig)
+			loc = loc->next;
+		else
+			cout << "found" << std::endl;
+	}
+
+	return 1;
 }
 
 
