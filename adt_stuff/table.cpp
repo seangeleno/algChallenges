@@ -1,6 +1,6 @@
 #include "table.hpp"
 table::table(void){
-	__sz = 53;
+	__sz = 2;
 	__tbl = new node*[__sz];
 	memset(__tbl,0,__sz*sizeof(node*));
 

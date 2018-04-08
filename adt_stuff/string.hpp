@@ -23,7 +23,8 @@ public:
 	string& operator=(const string &);
 	string& operator+=(const string &);
 	string& operator +=(const char* );
-	string& operator +(const string&) const;
+	string operator +(const string&) const;
+	string operator +(const char[]) const;
 	char&   operator [](const int) const;
 	friend ostream& operator<<(ostream& os, const string& str);
 	friend istream& operator>>(istream& is,  string& str);

@@ -19,6 +19,9 @@ int main(){
 
 
 	storage.insert(str2);	
+	str3 = str1 + " yes hi1 ";
+	cout << str3 << std::endl;
+	storage.insert(str3);
 	for (int i = 0; i < 5; ++i)
 		str2+=str1;
 	cout << str2 << std::endl;
