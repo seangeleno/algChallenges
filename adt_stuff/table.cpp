@@ -61,13 +61,16 @@ query table::retrieve(const string& name) const{
 	for (int i = 0; i < size; ++i)
 		sum += name[i];
 	node * loc = __tbl[sum%__sz];
-	if (!loc)
-		return 0;
-	while( loc->dat.get_name() != name)
-		loc = loc->next;
-	if (!loc)
-		return NULL;
-	return loc->dat;
+	while( loc ){
+		if (loc->dat.get_name() != name )
+			loc = loc->next;
+		else break;
+	}
+
+
+	if (!loc) return NULL;
+	query query_out = loc->dat;
+	return query_out;
 }
 
 	

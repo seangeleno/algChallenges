@@ -17,12 +17,11 @@ void concat(string & str1, string & str2, table & storage){
 
 
 		
-		cin.ignore(400,'\n');	
 		query1 = storage.retrieve(str1);
 		query1.display();
-		str2 = query1.get_name();
-		cout << "modify\n";
+		cout << "modify" << std::endl;
 		cin >> str1;
+		str2 = query1.get_name();
 		str2+=str1;
 		if(query1.set_name(str2)){
 			cout << "successful modification" << std::endl;
@@ -65,7 +64,8 @@ int main(){
 
 				concat(str1,str2,storage);
 				break;
-				
+			case 0:
+				break;
 			default:
 				cout << "enter a valid option" << std::endl;
 				break;

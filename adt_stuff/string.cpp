@@ -99,8 +99,8 @@ string& string::operator =(const char* other){
 
 bool string::operator !=(const string& other) const{
 	if (strcmp(__str, other.__str)!=0)
-		return false;
-	return true;
+		return true;
+	return false;
 }
 char& string::operator[](const int i)const{
 	char c = '\0';
@@ -130,7 +130,7 @@ istream& operator >>(istream& is, string& str){
 	if (str.__str)
 		delete[] str.__str;
 	str.__str = new char[strlen(buffer)+1];
-	str.__cap = strlen(buffer);
+	str.__cap = strlen(buffer) + 1;
 	strcpy(str.__str,buffer);
 	return is;
 }
