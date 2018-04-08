@@ -1,9 +1,13 @@
 #include "string.hpp"
+#include "table.hpp"
+
 #include <iostream>
 
 int main(){
 	char buffer[300];
 	string str1, str2;
+	string str3;
+	table storage;
 	cin >> str1;
 	cout << str1 << std::endl;
 
@@ -14,8 +18,14 @@ int main(){
 	str2 = str1+=_in;
 
 
-
+	storage.insert(str2);	
+	for (int i = 0; i < 5; ++i)
+		str2+=str1;
 	cout << str2 << std::endl;
+	storage.insert(str1);
+	storage.insert(str2);
+
+	storage.display();
 	delete[] _in;
 	return 0;
 }

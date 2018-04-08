@@ -8,14 +8,12 @@ string::string(){
 
 
 
-string::string(const char* in_){
-	__cap = strlen(in_)+1;
-	__str = new char[__cap];
+string::string(const char* in_) : __cap(strlen(in_)+1), 
+								__str(new char[__cap])
 
+{
 	strcpy(__str,in_);
 }
-
-
 
 
 string::string(const string& other){
@@ -26,7 +24,10 @@ string::string(const string& other){
 }
 
 
-string string::operator+(const string& other)const{
+int string::size(void)const{
+	return __cap;
+}
+string& string::operator+(const string& other)const{
 	char buffer[500];
 	memset(buffer,0,sizeof(char)*500);
 	memcpy(buffer,__str,__cap);
@@ -34,7 +35,7 @@ string string::operator+(const string& other)const{
 	char * n_s = new char[strlen(buffer)+1];
 	strcpy(n_s,buffer);
 	string* out = new string(n_s);
-	return *out;
+	return (*out);
 }
 
 
@@ -52,6 +53,7 @@ string& string::operator +=(const char* other){
 	return *this;
 }
 
+
 string& string::operator =(const string &other){
 	if (__str)
 		delete[] __str;
@@ -59,6 +61,13 @@ string& string::operator =(const string &other){
 	__cap = other.__cap;
 	memcpy(__str,other.__str,__cap);
 	return *this;
+}
+
+
+char& string::operator[](const int i)const{
+	char c = '\0';
+	if (i > __cap)	return __str[0];
+	return __str[i];
 }
 
 
