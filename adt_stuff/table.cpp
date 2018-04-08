@@ -86,8 +86,10 @@ int table::remove(const string& desig){
 	while(loc){
 		if (loc->dat.get_name()!=desig)
 			loc = loc->next;
-		else
+		else{
 			cout << "found" << std::endl;
+			break;
+		}
 	}
 
 	return 1;

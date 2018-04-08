@@ -10,11 +10,15 @@ query::query(const string& name, const string& date){
 	__name = name;
 	if (run_check(date))  
 		__date = date;
+	else __date = "xx/xx/xx";
 }
 
 query& query::operator=(const query& other){
 	__name = other.__name;
-	__date = other.__date;
+	
+	if (run_check(other.__date))
+		__date = other.__date;
+	else __date = "xx/xx/xx";
 
 	return *this;
 }
@@ -34,8 +38,11 @@ string query::get_name(void) const{
 }
 
 int query::set_date(const string& new_date){
-	__date = new_date;
-	return 1;
+	if (run_check(new_date)){
+		__date = new_date;
+		return 1;
+	}
+	else return 0;
 }
 
 string query::get_date(void) const{
@@ -56,13 +63,15 @@ int query::join(const query& other){
 
 int query::run_check(const string& c_d) const{
 	char ch;
+	if (c_d.size() != 9) return 0;
 	for (int i = 0; i < 7; ++i){
-		if ((i > -1 && i < 3 ) || (i > 3 && i < 6 ) || i > 6 ){
+		if ((i > -1 && i < 2 ) || (i > 2 && i < 5 ) || i > 5 ){
 			ch = c_d[i];
 			if (ch < '0' || ch > '9')
 				return 0;
 		}
-		else if ( i == 3 || i == 6 ){
+		else if ( i == 2 || i == 5 ){
+
 			ch = c_d[i];
 			if (ch!='/')
 				return 0;

@@ -30,7 +30,7 @@ void concat(string & str1, string & str2, table & storage){
 		return;
 	}
 	else if (select == 2){
-		cin >> str1;
+		cin >> str1 >> str2;
 		query1 = storage.retrieve(str1);
 		query2 = storage.retrieve(str2);
 		query1.join(query2);
