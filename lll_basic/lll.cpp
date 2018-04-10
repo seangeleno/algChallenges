@@ -57,10 +57,8 @@ void LLL::append(const int dat){
 	temp->next = NULL;
 	temp->data = dat;
 	++len;
-	if (len==2){
-		Node* tail_ptr = tail;
-		head = tail_ptr;
-	}
+	if (len==2)
+		head = tail;
 	tail = temp;
 	return;
 }
@@ -133,17 +131,6 @@ int LLL::remove_at(const int dat){
 }
 		
 
-
-
-
-
-
-
-
-
-
-
-
 int LLL::remove_from_end(int dat){
 	--dat;
 	return remove_f_e(head,dat);
@@ -157,6 +144,9 @@ int LLL::remove_f_e(Node *& curr,  int dat){
 		return 0;
 	int sig = remove_f_e(curr->next, dat) + 1;
 	if (sig == -1) return -1;
+	else if ((dat == len-1) && (sig == dat-1))
+		tail = curr;
+		
 	else if(sig == dat)
 	{
 		Node * temp = curr->next;
@@ -166,21 +156,16 @@ int LLL::remove_f_e(Node *& curr,  int dat){
 	}
 	return sig;
 }
+/*
+int LLL::remove_fe_fast(const int dat){
+	Node * fast_ptr = head;
+	Node * slow_ptr = head;
+	int ctr = 0;
+	return remove_fe_fast(slow_ptr, fast_ptr, dat, ctr);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 int LLL::remove_fe_fast(Node *& slow_ptr, Node*& fast_ptr, const int dat,
 	int& ctr)
@@ -195,7 +180,7 @@ int LLL::remove_fe_fast(Node *& slow_ptr, Node*& fast_ptr, const int dat,
 
 	bool flg = false;
 	int sig = 0;
-	if (!fast_ptr || !slow_ptr)
+	if (!slow_ptr&&!fast_ptr)
 		return 0;
 	for (int i = 0; i < dat; ++i){
 		if (!fast_ptr->next){
@@ -210,10 +195,7 @@ int LLL::remove_fe_fast(Node *& slow_ptr, Node*& fast_ptr, const int dat,
 	if (ctr==dat)
 		return slow_ptr->data;
 	return sig;
-}
-
-
-
+} */
 
 
 
@@ -228,8 +210,6 @@ void LLL::display(void)const{
 	}
 	return;
 }
-
-
 
 
 LLL::~LLL(){

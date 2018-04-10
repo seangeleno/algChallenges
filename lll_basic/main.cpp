@@ -94,6 +94,9 @@ void LLL_rand(void){
 				lll->remove_at_r(dat);
 				break;
 			case 8:
+				scanf("%d",&dat);
+				dat = lll->remove_fe_fast(dat);
+				printf("%d\n",dat);
 				break;
 			default:
 				break;

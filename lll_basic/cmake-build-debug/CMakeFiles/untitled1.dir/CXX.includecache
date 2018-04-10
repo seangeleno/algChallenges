@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/lyleh/Desktop/algChallenges/lll_basic/Node.hpp
+
+/Users/lyleh/Desktop/algChallenges/lll_basic/lll.cpp
+lll.hpp
+/Users/lyleh/Desktop/algChallenges/lll_basic/lll.hpp
+
+/Users/lyleh/Desktop/algChallenges/lll_basic/lll.hpp
+cstdio
+-
+cstdlib
+-
+Node.hpp
+/Users/lyleh/Desktop/algChallenges/lll_basic/Node.hpp
+
+/Users/lyleh/Desktop/algChallenges/lll_basic/main.cpp
+lll.hpp
+/Users/lyleh/Desktop/algChallenges/lll_basic/lll.hpp
+

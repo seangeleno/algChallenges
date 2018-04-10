@@ -1,5 +1,5 @@
 #include <string>
-#include <list>
+#include <vector>
 #include <map>
 #include <thread>
 #include <mutex>
@@ -18,14 +18,14 @@ using namespace std;
 
 mutex mtx;
 
-void insertion(list<string>& lis, string str ){
+void insertion(vector<string>& lis, string str ){
 	//mtx.lock();	
 	lis.push_back(str);
 	//mtx.unlock();
 }
 
-void retrieve(list<string>& lis, int pos){
-	list<string>::iterator iter = lis.begin();
+void retrieve(vector<string>& lis, int pos){
+	vector<string>::iterator iter = lis.begin();
 	string str;
 	short int  sel;
 	for (int i = 0; (i < pos) && (iter != lis.end()) ; ++i)
@@ -49,13 +49,13 @@ void retrieve(list<string>& lis, int pos){
 }
 
 
-void menu(list<string> & lis){
-	std::list<string>::iterator iter;
-	std::list<string>::reverse_iterator r_iter;
+void menu(vector<string> & lis){
+	std::vector<string>::iterator iter;
+	std::vector<string>::reverse_iterator r_iter;
 	
 	int sel;
 	do{
-		cout << "1 to show list, 2 to show reverse, 0 to exit" << endl;
+		cout << "1 to show vector, 2 to show reverse, 0 to exit" << endl;
 		cin >> sel;
 		switch(sel){
 			case 1:
@@ -73,7 +73,7 @@ void menu(list<string> & lis){
 	return;
 }
 
-void elim_str(list<string>& lis, const string str, const int offset, const int id){
+void elim_str(vector<string>& lis, const string str, const int offset, const int id){
 
 //Doesnt work, pointers get rearranged following deletion
 	int cnt = 0;	
@@ -89,7 +89,7 @@ void elim_str(list<string>& lis, const string str, const int offset, const int i
 		string inspect = *iter;
 		char loc = str[0];
 		mtx.lock();
-		printf("to delete: %c\ncurrent element: %c\n: id %d\nposition %d in list\n\n",loc,inspect[0], id, id*offset+i);
+		printf("to delete: %c\ncurrent element: %c\n: id %d\nposition %d in vector\n\n",loc,inspect[0], id, id*offset+i);
 
 		mtx.unlock();
 		if (inspect[0] == loc)
@@ -99,7 +99,7 @@ void elim_str(list<string>& lis, const string str, const int offset, const int i
 	return;
 }
 
-void launch(list<string>& lis, const string begins_with){
+void launch(vector<string>& lis, const string begins_with){
 	thread* threads[4];
 	int partitions = lis.size();
 	int offset = partitions/std::thread::hardware_concurrency();
@@ -119,7 +119,7 @@ void launch(list<string>& lis, const string begins_with){
 
 
 int main(){
-	list<string> str_lis;
+	vector<string> str_lis;
 	
 	string str;
 	int count=0;
@@ -135,7 +135,7 @@ int main(){
 			cin >> retr_loc;
 			if (!(retr_loc < 0) || retr_loc > str_lis.size())
 				retrieve(std::ref(str_lis), retr_loc);
-			else cout << "exceeds list bounds" << endl;
+			else cout << "exceeds vector bounds" << endl;
 		}
 		else if (str == "launch"){
 			string b_w;
@@ -157,7 +157,7 @@ int main(){
 
 
 
-	list<string>::iterator iter = str_lis.begin();
+	vector<string>::iterator iter = str_lis.begin();
 	while(iter != str_lis.end()){
 		cout << *iter << endl;
 		++iter;

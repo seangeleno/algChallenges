@@ -26,6 +26,7 @@ public:
 	int remove_at(const int);
 	int remove_at_r(const int);
 	int remove_from_end(int);
+	int remove_fe_fast(const int);
 	void display(void)const;	
 	
 };
