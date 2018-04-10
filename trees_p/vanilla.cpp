@@ -16,8 +16,6 @@ tree::tree(const int sz, const int upper_bound){
 
 
 
-
-
 int tree::insert(const int d){
 	if (!root){
 		root = new node(d);

@@ -45,8 +45,22 @@ public:
 	void display_in(void);
 	void display_post(void);
 
-
-
-
-
 };
+
+
+struct node_23{
+	node_23* child[3];
+	int dat;
+	node_23() : dat(0), memset(child, 0, 3*sizeof(node_23 *)){}
+	node_23(int d){
+		dat = d;
+		memset(child, 0, 3*sizeof(node_23*));
+	}
+	~node();
+};
+
+class tree_23{
+private:
+	node_23 * root;
+private:
+	
