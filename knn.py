@@ -5,18 +5,24 @@ def knn(upper_bounds=100, num_plots=100,num_klusters=5):
 	points = [(np.random.randint(0,upper_bounds), np.random.randint(0,upper_bounds)) for i in range(num_plots)]
 	klusters = [(np.random.randint(0,upper_bounds), np.random.randint(0,upper_bounds)) for i in range(num_klusters)]
 	categorization = {}
+	data_list = []
 	for i in range(num_klusters):
 		categorization[i]=[]		
 	for i in range(num_plots):
+		local_dist = []
 		lowest = upper_bounds*5
 		lowest_idx = num_klusters+1
 		for j in range(num_klusters):
 			sum_ = ((klusters[j][0] - points[i][0])**2 + (klusters[j][1] - points[i][1])**2)
 			sum_=np.sqrt(sum_)
+			local_dist.append((j,sum_))
 			if sum_ < lowest:
 				lowest_idx = j
 				lowest = sum_
 		categorization[lowest_idx].append(i)
+		
+		local_dist.insert(0,((points[i][0], points[i][1]),lowest_idx))
+		data_list.append(local_dist)
 
 	
 	color_dict = {0 : 'lightcoral',1:'darkorange',2:'aqua',
@@ -37,9 +43,12 @@ def knn(upper_bounds=100, num_plots=100,num_klusters=5):
 	for i in range(num_klusters):
 		plt.scatter(klusters[i][0],klusters[i][1], color=color_dict[i],s=100)
 	
+	for item in data_list:
+		print(item)
+	for item in categorization.keys():
+		data_array = np.asarray(categorization[item])
+		print("{}: loc({},{})\tnum_els:  {}, avg: {}, std: {}".format(item,klusters[item][0],klusters[item][1],len(categorization[item]), np.mean(data_array), np.std(data_array)))
 	plt.show()
-
-
 
 
 def main():
