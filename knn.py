@@ -24,8 +24,13 @@ def knn(upper_bounds=100, num_plots=100,num_klusters=5):
 		8:'teal',9:'maroon',10:'gold'}
 
 
-	#for i in range(num_klusters):
-	#color_dict[i] = ( i/num_klusters, i/num_klusters, i/num_klusters)
+	for i in range(11,num_klusters):
+		if i % 3 == 0:
+			color_dict[i] = ( i/num_klusters*.3333, i/num_klusters, i/num_klusters)
+		elif i % 3 == 1:
+			color_dict[i] = ( i/num_klusters, i/num_klusters*.3333, i/num_klusters)
+		else:	
+			color_dict[i] = ( i/num_klusters, i/num_klusters, i/num_klusters*.3333)
 	for i in range(num_klusters):
 		for el in categorization[i]:
 			plt.scatter(points[el][0],points[el][1], color=color_dict[i])
