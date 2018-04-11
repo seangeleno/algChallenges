@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 
 struct node{
@@ -29,10 +29,11 @@ private:
 	int remove(node*&,const int);
 	int seek_ios(node*,node*&);
 	int insert(node*&, node*&);	
-	void pre(node*&);
-	void in_(node*&);
+	void pre(node*&,int, int, char*&,const int, const int, const int, const int);
+	void in_(node*&,int);
 	void post(node*&);
 	int destr_tree(node*&);
+	int get_num_children(node*,int&,int);
 public:
 	tree();
 	tree(const int, const int);
@@ -47,20 +48,25 @@ public:
 
 };
 
-
+/*
 struct node_23{
 	node_23* child[3];
 	int dat;
-	node_23() : dat(0), memset(child, 0, 3*sizeof(node_23 *)){}
+	node_23() : dat(0){
+		memset(child, NULL, 3*sizeof(node_23 *));
+	}
 	node_23(int d){
 		dat = d;
-		memset(child, 0, 3*sizeof(node_23*));
+		memset(child, NULL, 3*sizeof(node_23*));
 	}
-	~node();
+	~node_23();
 };
 
 class tree_23{
 private:
 	node_23 * root;
 private:
-	
+};
+
+
+*/

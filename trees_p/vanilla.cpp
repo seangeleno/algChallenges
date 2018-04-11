@@ -1,9 +1,11 @@
 #include "tree.hpp"
-
+#include <time.h>
+#include <string.h>
 tree::tree() : root(NULL){}
 tree::tree(const int sz, const int upper_bound){
 	root = NULL;
 	int supply;
+	srand(time(NULL));
 	for (int i = 0; i < sz; ++i){
 		supply = rand() % upper_bound;
 		insert(supply);
@@ -40,6 +42,24 @@ int tree::insert(node*& curr, const int d){
 int tree::remove(const int d){
 	if (!root)
 		return 0;
+	if(root->dat == d){
+		node * temp;
+		node* l_branch = root->l;
+		node* r_branch = root->r;
+		delete root;
+		if(seek_ios(r_branch,temp)){
+			root = temp;
+			if (temp->l)
+				insert(root,temp->l);
+			if (temp->r)
+				insert(root,temp->r);
+			root->l = l_branch;
+			root->r = r_branch;
+			return 1;
+		}
+		root = r_branch;
+		return 0;
+	}
 	return remove(root, d);
 }
 
@@ -101,13 +121,50 @@ int tree::insert(node*& curr, node*& to_set){
 	else 
 		return insert(curr->r, to_set);
 }
+
+int tree::get_num_children(node* curr,int & depth, int counter){
+	if(!curr)
+		return 0;
+	if (counter>depth) depth = counter;
+	if (!curr->l && !curr->r)
+		return 1;
+	int cnt = get_num_children(curr->l,depth,counter+1);
+	cnt    += get_num_children(curr->r,depth,counter+1);
+	return cnt;
+}
+
+
 void tree::display_pre(void){
-	return pre(root);
+	int depth = 0;
+	int children = get_num_children(root,depth,0);
+	int avg = (int)children/2;
+	int bounds = depth*children+depth;
+	char * screen = new char[bounds];
+	memset(screen,32,sizeof(char)*bounds);
+	for (int i = depth; i < bounds; i*=depth)
+		screen[i-1] = '\n';
+	screen[bounds-1]='\0';
+	printf("%s",screen);
+	int incr = avg*depth;
+	int offset = 0;
+	int deepest = depth;
+	printf("children: %d, avg: %d\n", children, avg);
+	pre(root,0,incr,screen,bounds,offset,deepest,avg);
+	for(int i = 0; i < bounds; i*=depth){
+		for (int j = 0; j < depth; ++j){
+			printf("%c",screen[i*depth+j]);
+		}
+	}
+	printf("\n");
+
+
+	delete[] screen;
 }
 	
 
 void tree::display_in(void){
-	return in_(root);
+	 in_(root,0);
+	 printf("\n");
 }
 
 
@@ -131,22 +188,38 @@ int tree::seek_ios(node* curr, node*& mem_loc){
 }
 
 
-void tree::pre(node*& curr){
+void tree::pre(node*& curr,int depth, int incr, char *& screen, \
+	const int bounds, const int box_bound, const int deepest, const int avg)
+{
 	if (!curr)
 		return;
-	printf("%d\n",curr->dat);
-	pre(curr->l);
-	pre(curr->r);
+
+	
+
+	incr/=(2*depth);
+
+	char in = curr->dat + 42;
+	int loc = incr+deepest*incr;
+	int i = depth*incr+1;
+	for (i; i < loc+depth+1; ++i)
+		screen[i] = '-';
+	screen[i] = in;
+	pre(curr->l,depth+1,incr,screen,bounds,box_bound,deepest,avg);
+	pre(curr->r,depth+1,incr,screen,bounds,box_bound,deepest,avg);
 	return;
 }
 
 
-void tree::in_(node*& curr){
+void tree::in_(node*& curr,int depth){
 	if (!curr)
 		return;
-	in_(curr->l);
-	printf("%d\n",curr->dat);
-	in_(curr->r);
+	in_(curr->l,depth+1);
+	char buffer[25];
+	memset(buffer,0,25);
+	memset(buffer,'-',depth+1);
+	buffer[0]='\n';
+	printf("%s%d\n",buffer,curr->dat);
+	in_(curr->r,depth+1);
 	return;
 }
 
