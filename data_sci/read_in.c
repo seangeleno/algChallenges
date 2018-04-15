@@ -218,6 +218,21 @@ int main(){
 		}
 		fclose(fr);
 	}
+	if ((fr=fopen("text.txt","r"))!=NULL){
+		while((c = fgetc(fr))&& c !='0' && !feof(fr)){ //handles and terminates file read stream
+			if (c=='\n'){
+				word_split(buf,&mp,&word_count,&letter_count);//load words into lookup as they are streamd
+				memset(buf,0,sizeof(char)*strlen(buf));
+				cnt = 0;
+			}
+			else{
+				buf[cnt] = c;
+				++cnt;
+			}
+		}
+		fclose(fr);
+	}
+
 
 	
 	float prog_letter_freq[26];	
@@ -244,7 +259,6 @@ int main(){
 			buf[cnt] = c;
 			++cnt;
 			}
-		}
 		else if (c >= '0' && c <='9')	
 			//handle numerical values
 			continue;
