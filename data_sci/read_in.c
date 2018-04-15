@@ -240,26 +240,28 @@ void freq_count(const struct map * mp, const int letter_count, float* prog_lette
 
 
 
-void diphone_gen(struct map * mp, struct ord_table * t){
-	char diphone[3];
+void phoneme_gen(struct map * mp, struct ord_table * t, const int phoneme_len){
+	char * phoneme;
 	clock_t t1,t2;
 	t1 = clock();
+	phoneme = (char*)malloc(sizeof(char)*(phoneme_len+1));
 	for (int i = 0; i < mp->sz; ++i){
 		struct node * curr = mp->table[i];
 		while(curr){
 			int c = 0;
 			while(curr->pair.word[c] != 0)	{
-				for (int i = 0; i < 2; ++i){
-					diphone[i] = curr->pair.word[c];
+				for (int i = 0; i < phoneme_len; ++i){
+					phoneme[i] = curr->pair.word[c];
 					++c;
 				}
-				insert_t(t, diphone);
-				memset(diphone,0,sizeof(char)*3);
-				--c;
+				insert_t(t, phoneme);
+				memset(phoneme,0,sizeof(char)*3);
+				c-=(phoneme_len-1);
 			}
 			curr=curr->nxt;
 		}
 	}
+	free(phoneme);
 	t2 = clock();
 	printf("elapsed %lf\n",(double)((t2-t1)/CLOCKS_PER_SEC));
 	return;
@@ -329,7 +331,8 @@ int main(){
 	
 	float prog_letter_freq[26];	
 	memset(prog_letter_freq, 0, sizeof(float)*26);
-	diphone_gen(&mp, &t);
+	for (int i = 1; i < 5; ++i)
+		phoneme_gen(&mp, &t, i);
 
 
 
@@ -348,7 +351,6 @@ int main(){
 			cnt = 0;
 			if (flag){
 				freq_count(&mp, letter_count, prog_letter_freq);
-				diphone_gen(&mp, &t);
 				flag = 0;
 			}
 		}
