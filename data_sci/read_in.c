@@ -3,7 +3,7 @@
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
-
+#include <time.h>
 #define BUFFSIZE 4096
 
 struct termios orig_termios;
@@ -21,8 +21,6 @@ void enable_raw_mode(){
 	tcsetattr(STDIN_FILENO,TCSAFLUSH,&raw);
 }
 
-
-
 struct prob_pair{
 	char * word;
 	int cnt;
@@ -37,10 +35,28 @@ struct node{
 	struct node * nxt;
 };
 
+
+typedef struct{
+	struct prob_pair pair;
+	struct t_node* child[2];
+}t_node;
+
+struct ord_table{
+	t_node* root;
+};	
+
+
+
+
 struct map{
 	struct node * table[501];
 	int sz;
 };
+
+int insert_t(struct ord_table *, char *);
+int insert(t_node**, char*);
+void display_t(struct ord_table);
+void disp_in(const t_node*);
 
 void display(struct map mp){
 	for (int i = 0; i < mp.sz; ++i){
@@ -56,6 +72,43 @@ void display(struct map mp){
 
 
 
+
+int insert_t(struct ord_table * t, char * d){
+	return insert(&t->root, d);
+}
+
+int insert( t_node ** curr, char * d){
+	if (!(*curr)){
+		(*curr) = (t_node *) malloc(sizeof(t_node));
+		(*curr)->pair.word = (char*)malloc(sizeof(char)*(strlen(d)+1));
+		strcpy((*curr)->pair.word, d);
+		(*curr)->pair.cnt = 1;
+		memset((*curr)->child,0,sizeof(t_node*)*2);
+		return 0;
+	}
+	if (strcmp((*curr)->pair.word,d)==0){
+		++(*curr)->pair.cnt;
+		return 1;
+	}
+	else if (strcmp(d,(*curr)->pair.word)<0)
+		return insert(&(*curr)->child[0],d) + 1;
+	else return insert(&(*curr)->child[1],d)+1;
+}
+
+void display_t(struct ord_table t){
+	disp_in(t.root);
+}
+
+void disp_in( const t_node* curr){
+	if(!curr)
+		return;
+	disp_in(curr->child[0]);
+	printf("%s %f %d\n",curr->pair.word, curr->pair.rel_freq, curr->pair.cnt);
+	disp_in(curr->child[1]);
+	return;
+}
+
+
 int hash( const char * word){
 	int sum = 0;
 	int len = strlen(word);
@@ -63,6 +116,8 @@ int hash( const char * word){
 		sum+=word[i];
 	return sum;
 }
+
+
 
 void store_word(struct map* mp, char * word){
 	int lookup = hash(word);
@@ -184,6 +239,31 @@ void freq_count(const struct map * mp, const int letter_count, float* prog_lette
 }
 
 
+
+void diphone_gen(struct map * mp, struct ord_table * t){
+	char diphone[3];
+	clock_t t1,t2;
+	t1 = clock();
+	for (int i = 0; i < mp->sz; ++i){
+		struct node * curr = mp->table[i];
+		while(curr){
+			int c = 0;
+			while(curr->pair.word[c] != 0)	{
+				for (int i = 0; i < 2; ++i){
+					diphone[i] = curr->pair.word[c];
+					++c;
+				}
+				insert_t(t, diphone);
+				memset(diphone,0,sizeof(char)*3);
+				--c;
+			}
+			curr=curr->nxt;
+		}
+	}
+	t2 = clock();
+	printf("elapsed %lf\n",(double)((t2-t1)/CLOCKS_PER_SEC));
+	return;
+}
 int main(){
 	enable_raw_mode();
 	float letters[26] = {8.167, 1.492, 2.682, 4.253, 12.702,
@@ -204,6 +284,8 @@ int main(){
 	int flag = 0;
 	FILE * fr;
 	int flg = 0;
+	struct ord_table t;
+	t.root = NULL;
 	if ((fr=fopen("wordstore.csv","r"))!=NULL){
 		while((c = fgetc(fr))&& c !='0' && !feof(fr)){ //handles and terminates file read stream
 			if (c==','){
@@ -212,6 +294,10 @@ int main(){
 				cnt = 0;
 			}
 			else{
+				if (c>=68 && c <= 90)
+					c+=32;
+				if (c < 97 || c > 97+25)
+					continue;
 				buf[cnt] = c;
 				++cnt;
 			}
@@ -219,13 +305,19 @@ int main(){
 		fclose(fr);
 	}
 	if ((fr=fopen("text.txt","r"))!=NULL){
-		while((c = fgetc(fr))&& c !='0' && !feof(fr)){ //handles and terminates file read stream
+
+		while((c = fgetc(fr))&& c !='0' && !feof(fr))
+		{ //handles and terminates file read stream
 			if (c=='\n'){
 				word_split(buf,&mp,&word_count,&letter_count);//load words into lookup as they are streamd
 				memset(buf,0,sizeof(char)*strlen(buf));
 				cnt = 0;
 			}
 			else{
+				if (c>=68 && c <= 90)
+					c+=32;
+				if ((c < 97 || c > 97+25) && c!=32 && c!='\n')
+					continue;
 				buf[cnt] = c;
 				++cnt;
 			}
@@ -237,18 +329,26 @@ int main(){
 	
 	float prog_letter_freq[26];	
 	memset(prog_letter_freq, 0, sizeof(float)*26);
+	diphone_gen(&mp, &t);
+
+
+
+
 
 	while(read(STDIN_FILENO, &c, 1)&& c !='0'){
 		if (c == '\n'){
 		//handle display call (should link to stats overview)
 			if (strcmp(buf, "display")==0)
 				display(mp);
+			else if (strcmp(buf,"tdisp")==0)
+				display_t(t);	
 			else
 				flag = word_split(buf,&mp,&word_count,&letter_count);
 			memset(buf,0,sizeof(char)*strlen(buf)+1);
 			cnt = 0;
 			if (flag){
 				freq_count(&mp, letter_count, prog_letter_freq);
+				diphone_gen(&mp, &t);
 				flag = 0;
 			}
 		}
