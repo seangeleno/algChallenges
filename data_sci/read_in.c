@@ -250,16 +250,16 @@ int phoneme_gen(struct map * mp, struct ord_table * t, const int phoneme_len){
 		struct node * curr = mp->table[i];
 		while(curr){
 			int c = 0;
-			int cnt = 0;
+			//int cnt = 0;
 			while(curr->pair.word[c] != 0)	{
 				for (int i = 0; i < phoneme_len; ++i){
 					phoneme[i] = curr->pair.word[c];
-					if (curr->pair.word[c] == 0)
-						++cnt;
+			//		if (curr->pair.word[c] == 0)
+			//			++cnt;
 					++c;
 				}
-				if (cnt)
-					break;
+			//	if (cnt)
+			//		break;
 				sig += insert_t(t, phoneme);
 				memset(phoneme,0,sizeof(char)*3);
 				c-=(phoneme_len-1);
@@ -337,11 +337,12 @@ int main(){
 	
 	float prog_letter_freq[26];	
 	memset(prog_letter_freq, 0, sizeof(float)*26);
-	int len = 1;
+	/*int len = 1;
 	while (phoneme_gen(&mp, &t, len) != 0)
 		++len;
-
-
+	*/
+	for (int i =1; i < 6; ++i)
+		phoneme_gen(&mp, &t, i);
 
 
 
