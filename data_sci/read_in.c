@@ -84,15 +84,15 @@ int insert( t_node ** curr, char * d){
 		strcpy((*curr)->pair.word, d);
 		(*curr)->pair.cnt = 1;
 		memset((*curr)->child,0,sizeof(t_node*)*2);
-		return 0;
+		return 1;
 	}
 	if (strcmp((*curr)->pair.word,d)==0){
 		++(*curr)->pair.cnt;
 		return 1;
 	}
 	else if (strcmp(d,(*curr)->pair.word)<0)
-		return insert(&(*curr)->child[0],d) + 1;
-	else return insert(&(*curr)->child[1],d)+1;
+		return insert(&(*curr)->child[0],d);
+	else return insert(&(*curr)->child[1],d);
 }
 
 void display_t(struct ord_table t){
@@ -240,21 +240,27 @@ void freq_count(const struct map * mp, const int letter_count, float* prog_lette
 
 
 
-void phoneme_gen(struct map * mp, struct ord_table * t, const int phoneme_len){
+int phoneme_gen(struct map * mp, struct ord_table * t, const int phoneme_len){
 	char * phoneme;
 	clock_t t1,t2;
 	t1 = clock();
+	int sig = 0;
 	phoneme = (char*)malloc(sizeof(char)*(phoneme_len+1));
 	for (int i = 0; i < mp->sz; ++i){
 		struct node * curr = mp->table[i];
 		while(curr){
 			int c = 0;
+			int cnt = 0;
 			while(curr->pair.word[c] != 0)	{
 				for (int i = 0; i < phoneme_len; ++i){
 					phoneme[i] = curr->pair.word[c];
+					if (curr->pair.word[c] == 0)
+						++cnt;
 					++c;
 				}
-				insert_t(t, phoneme);
+				if (cnt)
+					break;
+				sig += insert_t(t, phoneme);
 				memset(phoneme,0,sizeof(char)*3);
 				c-=(phoneme_len-1);
 			}
@@ -264,7 +270,7 @@ void phoneme_gen(struct map * mp, struct ord_table * t, const int phoneme_len){
 	free(phoneme);
 	t2 = clock();
 	printf("elapsed %lf\n",(double)((t2-t1)/CLOCKS_PER_SEC));
-	return;
+	return sig;
 }
 int main(){
 	enable_raw_mode();
@@ -331,8 +337,9 @@ int main(){
 	
 	float prog_letter_freq[26];	
 	memset(prog_letter_freq, 0, sizeof(float)*26);
-	for (int i = 1; i < 5; ++i)
-		phoneme_gen(&mp, &t, i);
+	int len = 1;
+	while (phoneme_gen(&mp, &t, len) != 0)
+		++len;
 
 
 
@@ -345,6 +352,8 @@ int main(){
 				display(mp);
 			else if (strcmp(buf,"tdisp")==0)
 				display_t(t);	
+			else if (strcmp(buf,"freq")==0)
+				freq_count(&mp, letter_count, prog_letter_freq);
 			else
 				flag = word_split(buf,&mp,&word_count,&letter_count);
 			memset(buf,0,sizeof(char)*strlen(buf)+1);
