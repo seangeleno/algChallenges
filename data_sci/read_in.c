@@ -204,11 +204,9 @@ int main(){
 	int flag = 0;
 	FILE * fr;
 	int flg = 0;
-	if ((fr=fopen("test.txt","rb"))==NULL)
+/*	if ((fr=fopen("test.txt","rb"))==NULL)
 		return 1;
 	
-	float prog_letter_freq[26];	
-	memset(prog_letter_freq, 0, sizeof(float)*26);
 
 
 	int params[2];
@@ -220,8 +218,13 @@ int main(){
 		fread(params,sizeof(int),2,fr);
 	if (params[0])
 		printf("wordcount %d letter cound %d\n",params[0],params[1]);
-	while(read(STDIN_FILENO,&c,1)==1 && c != '0'){
-	//while((c = fgetc(fr))&& c !='0' && !feof(fr)){ //handles and terminates file read stream
+*/
+	if ((fr=fopen("text.txt","r"))==NULL)
+		return 1;
+//	while(read(STDIN_FILENO,&c,1)==1 && c != '0'){
+	float prog_letter_freq[26];	
+	memset(prog_letter_freq, 0, sizeof(float)*26);
+	while((c = fgetc(fr))&& c !='0' && !feof(fr)){ //handles and terminates file read stream
 		if (c == '\n'){
 			if (strcmp(buf, "display")==0)
 				display(mp);
@@ -239,17 +242,29 @@ int main(){
 			printf(" \n");
 			buf[cnt] = c;
 			++cnt;
+			if (cnt == BUFFSIZE){
+				flag = word_split(buf,&mp,&word_count,&letter_count);
+			memset(buf,0,sizeof(char)*strlen(buf)+1);
+			cnt = 0;
+			if (flag){
+				freq_count(&mp, letter_count, prog_letter_freq);
+				flag = 0;
+			}
+			}
 		}
 		else if (c >= '0' && c <='9')	
 			continue;
-		else if (c >= 68 && c <= 90)
-			c+=32;	
+
 		else if (c == 0x7f){
 			printf("%c\n",c);
 			buf[--cnt] = 0;
 	}
 		else{
-			if (c-97 < 0 || c-97 > 25)
+			if (c >= 68 && c <= 90){
+				c+=32;
+				printf("%c\n",c);
+			}
+			else if (c-97 < 0 || c -97 > 25)
 				continue;
 			buf[cnt] = c;
 			++cnt;
@@ -258,6 +273,8 @@ int main(){
 	}
 	for (int i =0; i < 26; ++i)
 		printf("%f\n",prog_letter_freq[i]);
+	display(mp);
+	/*
 	FILE *fp;
 	if ((fp=fopen("arr","wb"))==NULL)
 		printf("cannot open file\n");
@@ -271,7 +288,7 @@ int main(){
 	fwrite(params,sizeof(int),2,fp);
 	fclose(fp);
 	disable_raw_mode();
-
+	*/
 
 	return 0;
 }
