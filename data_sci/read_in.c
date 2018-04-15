@@ -38,7 +38,7 @@ struct node{
 };
 
 struct map{
-	struct node * table[2];
+	struct node * table[501];
 	int sz;
 };
 
@@ -73,7 +73,7 @@ void store_word(struct map* mp, char * word){
 		strcpy(curr->pair.word, word);
 
 		curr->pair.rel_freq = 0;
-		curr->pair.cnt = 0;
+		curr->pair.cnt = 1;
 		curr->nxt = 0;
 		mp->table[lookup%mp->sz] = curr;
 		return;
@@ -134,9 +134,9 @@ int word_split(char* buffer, struct map * mp, int * word_count, int * letter_cou
 			store_word(mp,input_word);
 			if((*word_count)%5 == 0)
 				++flag;
-			memset(input_word, 0, sizeof(char)*strlen(input_word));
-			free(input_word);
-			start = i+1;
+			memset(input_word, 0, sizeof(char)*strlen(input_word));//unique mem locs but still getting lngering mem?
+			free(input_word); 
+			start = i+1; //use to locate offset from beginning of word
 		}
 	}
 	memset(buffer,0,strlen(buffer));
@@ -192,8 +192,8 @@ int main(){
 		0.074
 		};
 	struct map mp;
-	mp.sz = 2;
-	memset(mp.table, 0, sizeof(struct node*)*2);
+	mp.sz = 501;
+	memset(mp.table, 0, sizeof(struct node*)*mp.sz);
 
 	char c;
 	char buf[BUFFSIZE];
@@ -204,28 +204,28 @@ int main(){
 	int flag = 0;
 	FILE * fr;
 	int flg = 0;
-/*	if ((fr=fopen("test.txt","rb"))==NULL)
-		return 1;
+	if ((fr=fopen("wordstore.csv","r"))!=NULL){
+		while((c = fgetc(fr))&& c !='0' && !feof(fr)){ //handles and terminates file read stream
+			if (c==','){
+				word_split(buf,&mp,&word_count,&letter_count);//load words into lookup as they are streamd
+				memset(buf,0,sizeof(char)*strlen(buf));
+				cnt = 0;
+			}
+			else{
+				buf[cnt] = c;
+				++cnt;
+			}
+		}
+		fclose(fr);
+	}
+
 	
-
-
-	int params[2];
-	memset(params,0,sizeof(int)*2);
-	if ((fr=fopen("arr","rb"))!=NULL)
-		fread(prog_letter_freq,sizeof(float),26,fr);
-	fclose(fr);
-	if((fr=fopen("params","rb"))!=NULL)
-		fread(params,sizeof(int),2,fr);
-	if (params[0])
-		printf("wordcount %d letter cound %d\n",params[0],params[1]);
-*/
-	if ((fr=fopen("text.txt","r"))==NULL)
-		return 1;
-//	while(read(STDIN_FILENO,&c,1)==1 && c != '0'){
 	float prog_letter_freq[26];	
 	memset(prog_letter_freq, 0, sizeof(float)*26);
-	while((c = fgetc(fr))&& c !='0' && !feof(fr)){ //handles and terminates file read stream
+
+	while(read(STDIN_FILENO, &c, 1)&& c !='0'){
 		if (c == '\n'){
+		//handle display call (should link to stats overview)
 			if (strcmp(buf, "display")==0)
 				display(mp);
 			else
@@ -235,60 +235,62 @@ int main(){
 			if (flag){
 				freq_count(&mp, letter_count, prog_letter_freq);
 				flag = 0;
-
 			}
 		}
+
 		else if (c == 32){
+			//separator for words as they are fed into parser. just around to make it cleaner
 			printf(" \n");
 			buf[cnt] = c;
 			++cnt;
-			if (cnt == BUFFSIZE){
-				flag = word_split(buf,&mp,&word_count,&letter_count);
-			memset(buf,0,sizeof(char)*strlen(buf)+1);
-			cnt = 0;
-			if (flag){
-				freq_count(&mp, letter_count, prog_letter_freq);
-				flag = 0;
-			}
 			}
 		}
 		else if (c >= '0' && c <='9')	
+			//handle numerical values
 			continue;
 
 		else if (c == 0x7f){
+			//backspace handling on inputs
 			printf("%c\n",c);
 			buf[--cnt] = 0;
-	}
+		}
+
 		else{
 			if (c >= 68 && c <= 90){
+				//if captial, shift to lowercase
 				c+=32;
 				printf("%c\n",c);
 			}
+
 			else if (c-97 < 0 || c -97 > 25)
+				//if it exceeds the bounds of our lookup, see ya later
 				continue;
+
+			//else we add the ltter to our buffer and display relative freq
 			buf[cnt] = c;
 			++cnt;
 			printf("%c : %f\n", c, letters[c-97]);
 		}
 	}
+	//look at our stuff before you go!
 	for (int i =0; i < 26; ++i)
 		printf("%f\n",prog_letter_freq[i]);
 	display(mp);
-	/*
+
+	//write out to file for reloading. store all words and all times appear
 	FILE *fp;
-	if ((fp=fopen("arr","wb"))==NULL)
+	if ((fp=fopen("wordstore.csv","w"))==NULL)
 		printf("cannot open file\n");
-	if (fwrite(prog_letter_freq,sizeof(float), 26, fp)!=26)
-		printf("file write error\n");
+	for (int i = 0; i < mp.sz; ++i){
+		struct node * curr = mp.table[i];
+		while(curr){
+			for(int j = 0; j < curr->pair.cnt; ++j){
+				fprintf(fp,"%s,",curr->pair.word);
+			}
+			curr = curr->nxt;
+		}
+	}
 	fclose(fp);
-	printf("finished\n");
-	params[0] = word_count;
-	params[1] = letter_count;
-	fp = fopen("params","wb");
-	fwrite(params,sizeof(int),2,fp);
-	fclose(fp);
-	disable_raw_mode();
-	*/
 
 	return 0;
 }
