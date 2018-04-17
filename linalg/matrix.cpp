@@ -6,16 +6,10 @@
 
 using std::async;
 
-mat_cont::mat_cont(void){
-	this->dim = 0;
-	this->mat = NULL;
-}
+mat_cont::mat_cont(void) : dim(0), mat(NULL){}
 
-mat_cont::mat_cont( const int dim){
-	this->dim = dim;
-	mat = new double[dim*dim];
+mat_cont::mat_cont( const int dim) : dim(dim), mat(new double[dim*dim]){}
 	//IMPORTANT: NOTE HOW IT IS ONE BLOCK OF MEMORY
-}
 
 
 void mat_cont::display(void) const{
@@ -64,6 +58,7 @@ double mat_cont::dot_t( const mat_cont & other, const int offset,  \
 {
 	double local_sum = 0;	
 	for (int i = offset; i < upper_lim+offset; ++i){
+	//maybe increment by 16 per mutex lock and release? look up cost of atomics
 		mtx.lock(); //thought atomizing access might help? apparently not
 		local_sum+=(this->mat[i] + other.mat[i]);
 		mtx.unlock();
