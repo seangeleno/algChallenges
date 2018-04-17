@@ -1,6 +1,23 @@
 #include <cstdlib>
 #include <cstdio>
 
+#include <thread>
+#include <mutex>
+#include <future>
+using std::thread;
+using std::mutex;
+using std::future;
+
+
+
+
+
+
+
+
+
+
+
 class mat_cont{
 private:
 	int dim;
@@ -16,6 +33,11 @@ public:
 	void display(void)const;
 	void set_dim( const int);
 	void load_seq(void);
+	double dot_t( mat_cont &, const int, const int);
+	double dot( mat_cont &);
+	double dot_r( mat_cont & );
+	//friend double dot_t( mat_cont&, const mat_cont &, const int, const int);
+	
 
 	/*nested class for interfacing w double bracket retrieval calls. 
 	exits scope and deletes*/
@@ -25,6 +47,8 @@ public:
         double& operator[](const int index) {
             return m[this->row * d + index];
         }
+		~Proxy(){
+		}
     private:
         int row;
 		double * m;
