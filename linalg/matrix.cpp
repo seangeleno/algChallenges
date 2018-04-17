@@ -89,7 +89,7 @@ double mat_cont::dot( const mat_cont & other)const {
 	}
 
 
-	for(int i = 1; i < 3; ++i)
+	for(int i = 0; i < 3; ++i)
 		sum+=threads[i].get(); //this retrieves the value held by the future object
 	return sum;
 }
