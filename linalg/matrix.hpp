@@ -33,8 +33,8 @@ public:
 	void display(void)const;
 	void set_dim( const int);
 	void load_seq(void);
-	double dot_t( mat_cont &, const int, const int);
-	double dot( mat_cont &);
+	double dot_t( const mat_cont &, const int, const int) const;
+	double dot( const mat_cont &)const;
 	double dot_r( mat_cont & );
 	//friend double dot_t( mat_cont&, const mat_cont &, const int, const int);
 	

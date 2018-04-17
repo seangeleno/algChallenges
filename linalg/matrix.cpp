@@ -14,6 +14,7 @@ mat_cont::mat_cont(void){
 mat_cont::mat_cont( const int dim){
 	this->dim = dim;
 	mat = new double[dim*dim];
+	//IMPORTANT: NOTE HOW IT IS ONE BLOCK OF MEMORY
 }
 
 
@@ -21,7 +22,8 @@ void mat_cont::display(void) const{
 	printf("[");
 	for (int i = 0; i < dim; ++i){
 		for (int j = 0; j < dim; ++j){
-			printf("[%d]", (int)mat[i * dim + j]);
+			printf("[%lf]", mat[i * dim + j]); // row = i * dim 
+				//(represents x memspaces into mem block.  + j gives the final offset
 			if ( j != dim - 1)
 				printf(", ");
 		}
@@ -31,11 +33,13 @@ void mat_cont::display(void) const{
 	}
 }
 
+
+
 mat_cont::~mat_cont(){
 	delete[] mat;
 }
 
-void mat_cont::load_seq(void){
+void mat_cont::load_seq(void){ //used for initializing consistent data for debug
 	for (int i = 0; i < dim; ++i){
 		for (int j = 0; j < dim; ++j){
 			mat[i * dim + j] = i * dim + j;
@@ -44,28 +48,34 @@ void mat_cont::load_seq(void){
 }
 double mat_cont::dot_r( mat_cont & other ){
 	double sum = 0;
-	for (int i = 0; i < 625; ++i)
+	int lim = dim*dim;
+	for (int i = 0; i < lim; ++i)
 		sum += ( this->mat[i] + other.mat[i] );
 	return sum;
 }
 
+
+
 std::mutex mtx;
-double mat_cont::dot_t( mat_cont & other, const int offset,  \
-	const int upper_lim)
+
+double mat_cont::dot_t( const mat_cont & other, const int offset,  \
+	const int upper_lim) const
 
 {
 	double local_sum = 0;	
 	for (int i = offset; i < upper_lim+offset; ++i){
-		mtx.lock();
+		mtx.lock(); //thought atomizing access might help? apparently not
 		local_sum+=(this->mat[i] + other.mat[i]);
 		mtx.unlock();
 	}
 	return local_sum;
 }
 
-double mat_cont::dot( mat_cont & other){
+double mat_cont::dot( const mat_cont & other)const {
 	//future will catch a returned value from an aysnchronous thread. Threads
 	//are split between 4 cores and wrapped with mutex. 
+	if (other.dim != this->dim)
+		return 0.0;	//wrap w proper exception handling obv	
 	future<double> threads[3];
 	int part = (int)round((dim * dim) / 4.0); //partitions set every "part" increment
 	
@@ -73,8 +83,8 @@ double mat_cont::dot( mat_cont & other){
 
 	for (int i = 1; i < 4; ++i){
 		threads[i-1] = async (std::launch::async,[this,&other,i,part]() { //this is a lambda function; 
-                              return this->dot_t(other, part*i, (i+1)*part);  //used for funny lil situations like this
-                          });
+							return this->dot_t(other, part*i, (i+1)*part);  //used for funny lil situations like this
+						});
 	}
 
 	for(int i = 0; i < part; ++i){
