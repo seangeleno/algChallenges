@@ -1,3 +1,6 @@
+#ifndef MATRIX
+#define MATRIX
+
 #include <cstdlib>
 #include <cstdio>
 
@@ -17,28 +20,65 @@ using std::future;
 
 
 
+class virtual_mat{
+};
 
-class mat_cont{
+class matrix : public virtual_mat{
+private:
+	int dimx;
+	int dimy;
+	double * mat;
+public:
+	matrix();
+	matrix(const int x, const int y);
+	matrix(const int dim);
+
+	~matrix();
+
+	void display() const;
+	void set_dim(const int, const int);
+	void load_seq(void);
+	class Proxy{
+    public:
+        Proxy(double*& m, int d, int row) : dimx(d), row(row), m(m) {  }
+        double& operator[](const int index) {
+            return m[this->row * dimx + index];
+		}
+		~Proxy(){
+		}
+    private:
+        int row;
+		double * m;
+		int dimx;
+	};
+	
+	Proxy operator[](const int& row){
+		return Proxy(mat, dimx,row);
+	}
+
+};
+
+
+
+class box : public virtual_mat{
 private:
 	int dim;
 	double* mat;
 public:
-	mat_cont(void);
-	mat_cont( const int);
+	box(void);
+	box( const int);
+	~box();
 
-
-
-
-	~mat_cont();
 	void display(void)const;
 	void set_dim( const int);
 	void load_seq(void);
-	double dot_t( const mat_cont &, const int, const int) const;
-	double dot( const mat_cont &)const;
-	double dot_single_thread( const mat_cont & )const;
-	void cross(const mat_cont &)const;
+	double dot_t( const box &, const int, const int) const;
+	double dot( const box &)const;
+	double dot_single_thread( const box & )const;
+	double dot_vectorized( box & );
+	void cross(const box &)const;
 	void identity(const int);
-	//friend double dot_t( mat_cont&, const mat_cont &, const int, const int);
+	//friend double dot_t( box&, const box &, const int, const int);
 	
 
 	/*nested class for interfacing w double bracket retrieval calls. 
@@ -63,4 +103,4 @@ public:
 };
 
 
-
+#endif
