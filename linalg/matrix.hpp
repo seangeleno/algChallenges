@@ -35,7 +35,9 @@ public:
 	void load_seq(void);
 	double dot_t( const mat_cont &, const int, const int) const;
 	double dot( const mat_cont &)const;
-	double dot_r( mat_cont & );
+	double dot_single_thread( const mat_cont & )const;
+	void cross(const mat_cont &)const;
+	void identity(const int);
 	//friend double dot_t( mat_cont&, const mat_cont &, const int, const int);
 	
 
@@ -46,7 +48,7 @@ public:
         Proxy(double*& m, int d, int row) : d(d), row(row), m(m) {  }
         double& operator[](const int index) {
             return m[this->row * d + index];
-        }
+		}
 		~Proxy(){
 		}
     private:
