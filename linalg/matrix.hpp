@@ -68,7 +68,7 @@ public:
 	box(void);
 	box( const int);
 	~box();
-
+	void xf(void);
 	void display(void)const;
 	void set_dim( const int);
 	void load_seq(void);
@@ -77,6 +77,7 @@ public:
 	double dot_single_thread( const box & )const;
 	double dot_vectorized( box & );
 	void cross(const box &)const;
+	void identity(void);
 	void identity(const int);
 	//friend double dot_t( box&, const box &, const int, const int);
 	
@@ -102,5 +103,24 @@ public:
 	}
 };
 
+
+class vec : public virtual_mat{
+private: 
+	int dimx;
+	double * mat;
+public:
+	vec();
+
+	vec(const int);
+	~vec();
+	void display(void)const;
+
+
+
+	void linspace(double, double, const int);
+	double& operator[](const int i){
+		return mat[i];
+	}
+};
 
 #endif

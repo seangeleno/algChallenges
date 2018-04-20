@@ -17,7 +17,8 @@ void box::display(void) const{
 	printf("[");
 	for (int i = 0; i < dim; ++i){
 		for (int j = 0; j < dim; ++j){
-			printf("[%lf]", mat[i * dim + j]); // row = i * dim 
+			printf("[%.2f]", mat[i * dim + j]); // row = i * dim 
+
 				//(represents x memspaces into mem block.  + j gives the final offset
 			if ( j != dim - 1)
 				printf(", ");
@@ -26,9 +27,8 @@ void box::display(void) const{
 		if (i != dim-1)
 			printf("[");
 	}
+	return;
 }
-
-
 
 box::~box(){
 	delete[] mat;
@@ -41,6 +41,9 @@ void box::load_seq(void){ //used for initializing consistent data for debug
 		}
 	}
 }
+
+
+
 double box::dot_single_thread(const box & other )const{
 	double sum = 0;
 	int lim = dim*dim;
@@ -130,11 +133,7 @@ double box::dot( const box & other)const {
 
 void box::cross(const box & other)const{
 }
-void box::identity(const int in_dim){
-	if (mat)
-		delete[] mat;
-	this->dim = in_dim;
-	mat = new double[this->dim];
+void box::identity(void){
 	printf("%d\n",dim);
 	for (int i = 0; i < dim; ++i){
 		for (int j = 0; j < dim; ++j){
@@ -147,6 +146,27 @@ void box::identity(const int in_dim){
 	return;
 }
 
+
+void box::identity(const int in_dim){
+	if (mat)
+		delete[] mat;
+	this->dim = in_dim;
+	mat = new double[this->dim];
+	identity();
+}
+
+void box::xf(void){
+	for (int i = 0; i < dim; ++i){
+		for(int j = 0; j < dim; ++j){
+			if (j < i)
+				mat[i *dim + j] = dim+j-i;
+			else
+				mat[i*dim + j] = j-i;
+		}
+	}
+	display();
+	printf("\n\n");
+}
 
 
 void box::set_dim(const int dim){

@@ -22,17 +22,18 @@ void matrix::display(void) const {
 	printf("[");
 	for (int i = 0; i < dimx; ++i){
 		for (int j = 0; j < dimy; ++j){
-			printf("[%lf]",mat[i * dimx + j]);
-			if ( j != dimy-1)
+			printf("[%.2f]", mat[i * dimx + j]); // row = i * dim 
+				//(represents x memspaces into mem block.  + j gives the final offset
+			if ( j != dimy - 1)
 				printf(", ");
-			
 		}
-		printf("]\n");
+		printf("]\n");			
 		if (i != dimx-1)
 			printf("[");
 	}
 	return;
 }
+
 
 void matrix::set_dim(const int x, const int y){
 	dimx = x; 
