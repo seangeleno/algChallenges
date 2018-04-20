@@ -169,6 +169,72 @@ void box::xf(void){
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+void box::load(const char * name){
+	FILE * f;
+	if ((f = fopen(name,"r"))==NULL)
+		return;
+	double num_buf[4096];
+	int num_count = 0;
+	int len_per_line = 0;
+	int iter = 0;
+
+	char buffer[4096]; 
+	char c;
+	int cnt = 0;
+
+	double * matrix;
+
+	while((c = fgetc(f))&& !feof(f)){
+		if (c != ',' && c!= '\n'){
+			buffer[cnt] = c;
+			++cnt;
+		}
+		else if (c!='\n'){
+			num_buf[num_count] = atof(buffer);
+			++num_count;
+
+			memset(buffer,0,strlen(buffer));
+			cnt = 0;
+		}
+		else{
+			if (len_per_line == 0){
+				len_per_line = num_count;
+				matrix = new double[len_per_line*len_per_line];
+				for (int i = 0; i < len_per_line; ++i)
+					matrix[i] = num_buf[i];
+				memset(num_buf,0.0,sizeof(double)*len_per_line);
+				
+				}	
+			else{
+				for (int i = 0; i < len_per_line; ++i)
+					matrix[iter*len_per_line + i] = num_buf[i];
+			}
+			memset(num_buf,0.0,sizeof(double)*len_per_line);
+			num_count = 0;
+			++iter;
+		}
+	}
+	fclose(f);
+
+	this->dim = len_per_line;
+	this->mat = matrix;
+	return;
+}
+
+
+
 void box::set_dim(const int dim){
 	this->dim = dim;
 	if (mat)

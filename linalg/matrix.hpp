@@ -38,6 +38,7 @@ public:
 	void display() const;
 	void set_dim(const int, const int);
 	void load_seq(void);
+	void load(const char*);
 	class Proxy{
     public:
         Proxy(double*& m, int d, int row) : dimx(d), row(row), m(m) {  }
@@ -68,6 +69,7 @@ public:
 	box(void);
 	box( const int);
 	~box();
+	void load(const char * );
 	void xf(void);
 	void display(void)const;
 	void set_dim( const int);
