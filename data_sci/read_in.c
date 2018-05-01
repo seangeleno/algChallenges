@@ -6,6 +6,7 @@
 #include <time.h>
 #define BUFFSIZE 4096
 
+
 struct termios orig_termios;
 
 void disable_raw_mode(){
