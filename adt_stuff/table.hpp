@@ -1,11 +1,27 @@
 #pragma once
 
-#include "string.hpp"
-#include "query.hpp"
+#include <stdarg.h>
 #include <iostream>
-struct node{
-	node* next;
-	query dat;
+
+using std::cout;
+using std::cin;
+using std::endl;
+
+#include "string.hpp"
+
+
+class p_tuple{
+public:
+	char m_type;
+	char *  m_name;
+	p_tuple(void) : m_type(0), m_name(){}
+	p_tuple(string ins, string inc){
+		char* temp = ins.get_str();
+		m_name = new char[strlen(temp)+1];
+		strcpy(m_name,temp);
+		m_type = inc[0]; 
+	}
+
 };
 
 
@@ -17,20 +33,19 @@ struct node{
 
 
 
-
-
-
-
 class table{
-private:
-	node** __tbl;
-	int __sz;
 public:
-	table();
-	~table();
-	int insert(const query&);
-	int remove(const string&);
-	query retrieve(const string&)const;
-	void display(void)const;
+	p_tuple * m_prototype;
+	string m_name;
+	int	m_n_items;
+
+
+	table(void);
+	table(int nargs, ...);
+	table(string, p_tuple ** );
+
+	~table(void);
+
+	void display_schema(void)const;
 };
 

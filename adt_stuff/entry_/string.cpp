@@ -124,8 +124,8 @@ ostream& operator << (ostream& os, const string& str){
 
 
 istream& operator >>(istream& is, string& str){
-	char buffer[200];
-	is.get(buffer,199,'\n');
+	char buffer[2048];
+	is.get(buffer,2047,'\n');
 	is.ignore(400,'\n');
 	if (str.__str)
 		delete[] str.__str;
@@ -135,8 +135,5 @@ istream& operator >>(istream& is, string& str){
 	return is;
 }
 
-bool string::operator ==(const string& other) const{
-	if (strcmp(__str, other.__str) == 0)
-		return true;
-	return false;
-}
+
+

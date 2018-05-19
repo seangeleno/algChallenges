@@ -28,7 +28,6 @@ public:
 	string operator +(const char[]) const;
 	bool    operator !=(const string&)const;
 	char&   operator [](const int) const;
-	bool operator ==(const string&)const;
 	friend ostream& operator<<(ostream& os, const string& str);
 	friend istream& operator>>(istream& is,  string& str);
 

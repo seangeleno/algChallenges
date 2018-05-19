@@ -13,6 +13,11 @@ query::query(const string& name, const string& date){
 	else __date = "xx/xx/xx";
 }
 
+
+
+
+
+
 query& query::operator=(const query& other){
 	__name = other.__name;
 	

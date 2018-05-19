@@ -1,111 +1,58 @@
 #include "table.hpp"
-table::table(void){
-	__sz = 2;
-	__tbl = new node*[__sz];
-	memset(__tbl,0,__sz*sizeof(node*));
-
-}
 
 
+table::table(void) : m_prototype(NULL), m_name(), m_n_items(0){}
 
 
+table::table(int nargs, ...){
+	va_list ap;
+	va_start(ap, nargs);
 
-
-
+	char * temp_name = va_arg(ap, char*);
+	m_name = temp_name;
 
 
 
+	m_prototype = new p_tuple[nargs];
+	--nargs;
 
-
-int table::insert(const query& in_){
-	string str = in_.get_name();
-	int sum = 0;
-	for (int i = 0; i < str.size(); ++i)
-		sum+=str[i];	
-
-	node* loc = __tbl[sum%__sz];
-	if (!loc){
-		loc = new node;
-		loc->dat = in_;
-		loc->next = NULL;
-		__tbl[sum%__sz] = loc;
-		return 1;
+	p_tuple * can_tup;
+	m_n_items = nargs;
+	for (int i = 0; i < nargs; ++i){
+		can_tup = va_arg(ap,p_tuple*);
+		m_prototype[i] = *can_tup;
 	}
+	va_end(ap);
 
-	while(loc->next)
-		loc = loc->next;
-	node* temp = new node;
-	temp->dat = in_;
-	temp->next = NULL;
-	loc->next = temp;
-	return 1;
+}
+
+void table::display_schema(void)const{
+	cout << "{\n";
+	for (int i = 0; i < m_n_items; ++i)
+		cout << "\t" << m_prototype[i].m_name <<\
+			" " << m_prototype[i].m_type << "," << endl;
+	cout << "}" << endl;
 }
 
 
-void table::display(void)const{
-	for (int i = 0; i < __sz; ++i){
-		node * curr = __tbl[i];
-		while(curr){
-			curr->dat.display();
-			curr = curr->next;
-		}
+//table::add_to(const entry* data){}	
 
-	}
-	return;
-}
+table::table(string in_name, p_tuple ** p_bus) : m_name(in_name)
+{
+	m_prototype = new p_tuple[5];
 
-
-query table::retrieve(const string& name) const{
-	int sum = 0;
-	int size = name.size();
-	for (int i = 0; i < size; ++i)
-		sum += name[i];
-	node * loc = __tbl[sum%__sz];
-	while( loc ){
-		if (loc->dat.get_name() != name )
-			loc = loc->next;
-		else break;
+	int i = 0;
+	while(p_bus[i] != NULL)
+	{
+		m_prototype[i] = *p_bus[i];
+		++i;
 	}
 
 
-	if (!loc) return NULL;
-	query query_out = loc->dat;
-	return query_out;
-}
+	m_n_items = i;
 
+}
 	
-int table::remove(const string& desig){
-
-	int sum = 0;
-	int size = desig.size();
-
-	for(int i = 0; i < size; ++i)
-		sum+=desig[i];
-
-	node * loc = __tbl[sum % __sz];
-	while(loc){
-		if (loc->dat.get_name()!=desig)
-			loc = loc->next;
-		else{
-			cout << "found" << std::endl;
-			break;
-		}
-	}
-
-	return 1;
+table::~table(void){
+	delete[] m_prototype;
 }
-
-
-table::~table(){
-	for (int i = 0; i < __sz; ++i){
-		node * curr = __tbl[i];
-		node * del_;
-		while(curr){
-			del_ = curr;
-			curr = curr->next;
-			delete del_;
-		}
-	}
-}
-
-

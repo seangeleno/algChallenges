@@ -1,77 +1,82 @@
+#include <stdio.h>
+#include <string.h>
+
 #include "string.hpp"
 #include "table.hpp"
 
+
 #include <iostream>
-
-void concat(string & str1, string & str2, table & storage){
-	int select;
-	query query1, query2;
-	cout << "1 to retrieve an item and then concatenate, " <<
-		"2 to concatenate two retrieved" << std::endl;
-	cin >> select;
-	cin.ignore(400,'\n');
+using std::cin;
 
 
-	if (select==1){
-		cin >> str1;
 
-
-		
-		query1 = storage.retrieve(str1);
-		query1.display();
-		cout << "modify" << std::endl;
-		cin >> str1;
-		str2 = query1.get_name();
-		str2+=str1;
-		if(query1.set_name(str2)){
-			cout << "successful modification" << std::endl;
-			storage.insert(query1);
-		}
-		return;
-	}
-	else if (select == 2){
-		cin >> str1 >> str2;
-		query1 = storage.retrieve(str1);
-		query2 = storage.retrieve(str2);
-		query1.join(query2);
-		storage.remove(str1);
-		storage.remove(str2);
-		storage.insert(query1);
-	}
-	return;
-}
 
 int main(){
-	query query1;
-	string str1, str2;
-	table storage;
-	int select;
+	table* tables[5];
+	string in_n, in_s, in_s2;
+	char in_c;
+	int in_d, sel;
+	//entry_int * ei;
+	//entry_str * es;
+	int cnt = 0;
+	int p_cnt = 0;
+	p_tuple ** p_bus = new p_tuple*[5];
+	p_tuple i_1,  i_2, i_3;
+
+
+	char * name_in_c;
 	do{
-		cout << "1) input string to table\n2) display table\n3) concatenate 2 strings\n0) exit\n" << std::endl;
-		cin >> select;
+		printf("1 to enter new table, 2 to display specific table schema, 0 to exit\n");
+		cin >> sel;
+
 		cin.ignore(400,'\n');
-		switch(select){
-			case 1:
-				cin >> str1 >> str2;
-				query1.set_name(str1);
-				query1.set_date(str2);
-				storage.insert(query1);
+
+		
+		switch(sel)
+		{
+			case(1):
+				printf("enter 0 to submit new schema\n");
+				while(1){	
+					cin >> in_s;
+					if (in_s == string("0"))
+						break;
+					cin >> in_s2;
+					p_bus[p_cnt] = new p_tuple(in_s, in_s2);
+					p_cnt++;
+
+				}
+				tables[cnt] = new table(string("hello there"),p_bus);		
+				memset(p_bus, 0, 5*sizeof(p_tuple *));
+				cnt++;
 				break;
+
 			case 2:
-				storage.display();
+				printf("enter the name of the table to fetch\n");
+				cin >> in_s;
+				for (int i = 0; i < cnt; ++i){
+					if (in_s == tables[i]->m_name)
+						tables[i]->display_schema();
+				}
 				break;
 			case 3:
-
-				concat(str1,str2,storage);
-				break;
-			case 0:
+				i_1 = p_tuple(string("master"),string("S")), 
+				i_2 = p_tuple(string("TYPE"), string("C"));
+				i_3 = p_tuple(string("TIME"), string("T"));
+				name_in_c = new char[5];
+				strcpy(name_in_c,"name");
+				tables[cnt] = new table(4, name_in_c , (&i_1), (&i_2), (&i_3));
+				delete name_in_c;
+				cnt++;
 				break;
 			default:
-				cout << "enter a valid option" << std::endl;
 				break;
 
 		}
-	} while( select );
-				
+
+	}while(sel);
+
+	for (int i = 0; i < cnt; ++i)
+		delete tables[i];
+	delete[] p_bus;
 	return 0;
 }
