@@ -20,6 +20,9 @@ public:
 	~string();
 	
 	int size(void)const;	
+	int sounding_split(const char)const;
+	int split(const char, string*&)const;
+
 	string& operator=(const string &);
 	string& operator=(const char*);
 	string& operator+=(const string &);

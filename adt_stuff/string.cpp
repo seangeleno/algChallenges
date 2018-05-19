@@ -33,6 +33,41 @@ int string::size(void)const{
 	return __cap;
 }
 
+int string::sounding_split(const char splt)const{
+	int n = 0;
+	for (int i = 0; i < __cap; ++i){
+		if (__str[i] == splt)
+			n++;
+	}
+	return n;
+}
+
+
+int string::split(const char splt, string*& out_strs )const{
+	char * buffer = new char[__cap];
+	int cnt; 
+	char c;
+	int out_cnt = 0;
+	for (int i = 0; i < __cap; ++i){
+		if (__str[i] == splt){
+			out_strs[out_cnt] = buffer;
+			memset(buffer, 0, sizeof(char)*__cap);
+			cnt = 0;
+		}
+		else{
+			buffer[cnt] = __str[i];
+			cnt++;
+		}
+
+	}
+	
+	out_strs[out_cnt] = buffer;
+	memset(buffer, 0, sizeof(char)*__cap);
+	cnt = 0;
+	return ++out_cnt;
+}
+
+
 
 string string::operator+(const string& other)const{
 	char buffer[500];

@@ -36,6 +36,20 @@ void table::display_schema(void)const{
 
 
 //table::add_to(const entry* data){}	
+table::table(const int nargs, const string name, p_tuple * p_bus){
+	m_name = name;
+	m_n_items = nargs;
+	m_prototype = new p_tuple[nargs];
+
+	for (int i = 0; i < m_n_items; ++i){
+		m_prototype[i].m_type = p_bus[i].m_type;
+		m_prototype[i].m_name = p_bus[i].m_name;
+	}
+
+	return;
+
+}
+
 
 table::table(string in_name, p_tuple ** p_bus) : m_name(in_name)
 {

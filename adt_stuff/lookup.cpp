@@ -1,9 +1,8 @@
 #include "lookup.hpp"
-lookup::lookup(void){
-	__sz = 2;
-	__tbl = new node*[__sz];
-	memset(__tbl,0,__sz*sizeof(node*));
+lookup::lookup(void) : __sz(0), __tbl(NULL){}
 
+lookup::lookup(int size) : __sz(size), __tbl(new node*[size]){
+	memset(__tbl, 0, sizeof(node*)*__sz);
 }
 
 
@@ -14,10 +13,35 @@ lookup::lookup(void){
 
 
 
+int lookup::hash(const string name)const{
+	char* cstr = name.get_str();
+	int len = strlen(cstr);
+	int sum = 0;
+	for(int i =0; i < len; ++i)
+		sum+=cstr[i];
+	return sum;
+}
 
 
+void lookup::add_to(const int nargs, const string name, p_tuple * params){
+	int val = hash(name);
+	node * curr = __tbl[val % __sz];
+	node * lag;
+	if (!curr){
+		__tbl[val % __sz] = new node(nargs, name, params);
+		return;
+	}
 
-int lookup::insert(const string tble_in_){
+	while( (curr->next)&&(curr->name != name)){
+		lag = curr;
+		curr = curr->next;
+	}
+	if (!curr)
+		lag->next = new node(nargs, name, params);
+	return;
+}	
+
+/*int lookup::insert(const string tble_in_){
 	string str = in_.get_name();
 	int sum = 0;
 	for (int i = 0; i < str.size(); ++i)
@@ -39,10 +63,10 @@ int lookup::insert(const string tble_in_){
 	temp->next = NULL;
 	loc->next = temp;
 	return 1;
-}
+}*/
 
 
-void lookup::display(void)const{
+/*void lookup::display(void)const{
 	for (int i = 0; i < __sz; ++i){
 		node * curr = __tbl[i];
 		while(curr){
@@ -53,28 +77,24 @@ void lookup::display(void)const{
 	}
 	return;
 }
+*/
 
-
-query lookup::retrieve(const string& name) const{
-	int sum = 0;
-	int size = name.size();
-	for (int i = 0; i < size; ++i)
-		sum += name[i];
+table lookup::retrieve(const string name) const{
+	int sum = hash(name);
 	node * loc = __tbl[sum%__sz];
 	while( loc ){
-		if (loc->dat.get_name() != name )
+		if (loc->name != name )
 			loc = loc->next;
 		else break;
 	}
 
 
 	if (!loc) return NULL;
-	query query_out = loc->dat;
-	return query_out;
+	return loc->d;
 }
 
 	
-int lookup::remove(const string& desig){
+/*int lookup::remove(const string& desig){
 
 	int sum = 0;
 	int size = desig.size();
@@ -95,7 +115,7 @@ int lookup::remove(const string& desig){
 	return 1;
 }
 
-
+*/
 lookup::~lookup(){
 	for (int i = 0; i < __sz; ++i){
 		node * curr = __tbl[i];
@@ -106,6 +126,7 @@ lookup::~lookup(){
 			delete del_;
 		}
 	}
+	delete[] __tbl;
 }
 
 

@@ -1,11 +1,19 @@
 #pragma once
 
 #include "string.hpp"
-#include "query.hpp"
+#include "table.hpp"
 #include <iostream>
-struct node{
+class node{
+public:
 	node* next;
-	entry __ntr;
+	string name;
+	table d;
+	node(void) : next(NULL), name(), d(NULL){}
+	node(int nargs, string name, p_tuple * p_bus){
+		this->name = name;
+		d = *(new table(nargs, name, p_bus));
+		next = NULL;
+	}
 };
 
 
@@ -27,10 +35,10 @@ private:
 	int __sz;
 public:
 	lookup();
+	lookup(int);
 	~lookup();
-	int insert(const query&);
-	int remove(const string&);
-	query retrieve(const string&)const;
-	void display(void)const;
+	void add_to(const int, const string, p_tuple * );
+	int hash(const string)const;
+	table retrieve(const string)const;
 };
 
